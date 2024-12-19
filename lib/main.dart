@@ -1,17 +1,47 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_c13_monday/providers/my_provider.dart';
 import 'package:todo_c13_monday/screens/intro_screen.dart';
+import 'package:todo_c13_monday/theme/base_theme.dart';
+import 'package:todo_c13_monday/theme/dark_theme.dart';
+import 'package:todo_c13_monday/theme/lgiht_theme.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MyProvider(),
+      child: EasyLocalization(
+        supportedLocales: [
+          Locale('en'),
+          Locale('ar'),
+        ],
+        path: 'assets/translations',
+        fallbackLocale: Locale('en'),
+        child: const MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var provier = Provider.of<MyProvider>(context);
+    BaseTheme theme = LightTheme();
+    BaseTheme darkTheme = DarkTheme();
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      theme: theme.themeData,
+      darkTheme: darkTheme.themeData,
+      themeMode: provier.themeMode,
+      debugShowCheckedModeBanner: false,
       initialRoute: IntroductionScreen.routeName,
       routes: {
         IntroductionScreen.routeName: (context) => IntroductionScreen(),
