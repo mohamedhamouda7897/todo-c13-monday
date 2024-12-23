@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_c13_monday/theme/base_theme.dart';
@@ -15,22 +13,40 @@ class LightTheme extends BaseTheme {
   Color get textColor => Color(0xFF1C1C1C);
 
   @override
+  Color get focusColor => Color(0xff7B7B7B);
+
+  @override
   ThemeData get themeData => ThemeData(
+        focusColor: Color(0xff7B7B7B),
         primaryColor: primaryColor,
         scaffoldBackgroundColor: background,
         appBarTheme: AppBarTheme(
-          backgroundColor: background,
-          centerTitle: true,
-          iconTheme: IconThemeData(
-            color: primaryColor,
-          ),
-        ),
+        backgroundColor: background,
+  centerTitle: true,
+  iconTheme: IconThemeData(
+  color: primaryColor,
+  ),),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: primaryColor,
           selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white,
           type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
+          showUnselectedLabels: false,
           showSelectedLabels: true,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(width: 2, color: focusColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(width: 2, color: focusColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(width: 2, color: focusColor),
+          ),
         ),
         textTheme: TextTheme(
           titleSmall: GoogleFonts.inter(

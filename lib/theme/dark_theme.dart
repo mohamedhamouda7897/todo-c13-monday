@@ -14,24 +14,49 @@ class DarkTheme extends BaseTheme {
   @override
   Color get textColor => Color(0xFFF4EBDC);
 
+
   @override
   ThemeData get themeData => ThemeData(
+    focusColor: primaryColor,
         primaryColor: primaryColor,
         scaffoldBackgroundColor: background,
-        appBarTheme: AppBarTheme(
-          backgroundColor: background,
-          centerTitle: true,
-          iconTheme: IconThemeData(
-            color: primaryColor,
-          ),
+  appBarTheme: AppBarTheme(
+  backgroundColor: background,
+  centerTitle: true,
+  iconTheme: IconThemeData(
+  color: primaryColor,
+  ),),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: primaryColor,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white,
+      type: BottomNavigationBarType.fixed,
+      showUnselectedLabels: false,
+      showSelectedLabels: true,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          width: 2,
+            color: primaryColor
         ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: background,
-          selectedItemColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
+      ),
+      focusedBorder:  OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+            width: 2,
+            color: primaryColor
         ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+            width: 2,
+            color: primaryColor
+        ),
+      ),
+    ),
         textTheme: TextTheme(
           titleSmall: GoogleFonts.inter(
             fontSize: 16,

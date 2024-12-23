@@ -2,7 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_c13_monday/providers/my_provider.dart';
+import 'package:todo_c13_monday/screens/forget_password.dart';
+import 'package:todo_c13_monday/screens/home/home.dart';
 import 'package:todo_c13_monday/screens/intro_screen.dart';
+import 'package:todo_c13_monday/screens/login.dart';
+import 'package:todo_c13_monday/screens/register.dart';
 import 'package:todo_c13_monday/theme/base_theme.dart';
 import 'package:todo_c13_monday/theme/dark_theme.dart';
 import 'package:todo_c13_monday/theme/lgiht_theme.dart';
@@ -44,7 +48,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: IntroductionScreen.routeName,
       routes: {
-        IntroductionScreen.routeName: (context) => IntroductionScreen(),
+        IntroductionScreen.routeName: (context) =>const IntroductionScreen(),
+        LoginScreen.routeName: (context) => LoginScreen(),
+        RigisterScreen.routeName: (context) => RigisterScreen(),
+        HomeScreen.routeName: (context) => HomeScreen(),
+        ForgetPassword.routeName: (context) => ForgetPassword(),
       },
     );
   }
