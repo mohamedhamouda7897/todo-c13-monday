@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_c13_monday/screens/add_events/add_events.dart';
 import 'package:todo_c13_monday/screens/home/tabs/home_tab.dart';
 import 'package:todo_c13_monday/screens/home/tabs/love_tab.dart';
 import 'package:todo_c13_monday/screens/home/tabs/map_tab.dart';
@@ -19,21 +20,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar:
-          BottomNavigationBar(currentIndex: currentIndex,
-              onTap: (value) {
-                currentIndex =value;
-                setState(() {
-
-                });
-              },
-              items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Love"),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-      ]),
-
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AddEventsScreen.routeName);
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (value) {
+            currentIndex = value;
+            setState(() {});
+          },
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Love"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          ]),
       body: tabs[currentIndex],
     );
   }

@@ -21,11 +21,17 @@ class LightTheme extends BaseTheme {
         primaryColor: primaryColor,
         scaffoldBackgroundColor: background,
         appBarTheme: AppBarTheme(
-        backgroundColor: background,
-  centerTitle: true,
-  iconTheme: IconThemeData(
-  color: primaryColor,
-  ),),
+          backgroundColor: background,
+          centerTitle: true,
+          iconTheme: IconThemeData(
+            color: primaryColor,
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: primaryColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+                side: BorderSide(color: Colors.white, width: 3))),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: primaryColor,
           selectedItemColor: Colors.white,
@@ -63,6 +69,12 @@ class LightTheme extends BaseTheme {
             fontSize: 30,
             fontWeight: FontWeight.w500,
             color: textColor,
+          ),
+
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 30,
+            fontWeight: FontWeight.w200,
+            color: primaryColor,
           ),
         ),
       );

@@ -1,7 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_c13_monday/firebase_options.dart';
 import 'package:todo_c13_monday/providers/my_provider.dart';
+import 'package:todo_c13_monday/screens/add_events/add_events.dart';
 import 'package:todo_c13_monday/screens/forget_password.dart';
 import 'package:todo_c13_monday/screens/home/home.dart';
 import 'package:todo_c13_monday/screens/intro_screen.dart';
@@ -14,16 +17,19 @@ import 'package:todo_c13_monday/theme/lgiht_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyProvider(),
       child: EasyLocalization(
         supportedLocales: [
-          Locale('en'),
-          Locale('ar'),
+          const Locale('en'),
+          const Locale('ar'),
         ],
         path: 'assets/translations',
-        fallbackLocale: Locale('en'),
+        fallbackLocale: const Locale('en'),
         child: const MyApp(),
       ),
     ),
@@ -52,6 +58,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (context) => LoginScreen(),
         RigisterScreen.routeName: (context) => RigisterScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
+        AddEventsScreen.routeName: (context) =>  AddEventsScreen(),
         ForgetPassword.routeName: (context) => ForgetPassword(),
       },
     );
