@@ -1,9 +1,14 @@
+import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_c13_monday/firebase_options.dart';
 import 'package:todo_c13_monday/providers/my_provider.dart';
+import 'package:todo_c13_monday/providers/user_provider.dart';
 import 'package:todo_c13_monday/screens/add_events/add_events.dart';
 import 'package:todo_c13_monday/screens/forget_password.dart';
 import 'package:todo_c13_monday/screens/home/home.dart';
@@ -20,9 +25,27 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Non-async exceptions
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+  };
+  // Async exceptions
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack);
+
+    return true;
+  };
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => MyProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => MyProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
+        ),
+      ],
       child: EasyLocalization(
         supportedLocales: [
           const Locale('en'),
@@ -42,6 +65,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provier = Provider.of<MyProvider>(context);
+    var userProvider = Provider.of<UserProvider>(context);
     BaseTheme theme = LightTheme();
     BaseTheme darkTheme = DarkTheme();
     return MaterialApp(
@@ -52,13 +76,15 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme.themeData,
       themeMode: provier.themeMode,
       debugShowCheckedModeBanner: false,
-      initialRoute: IntroductionScreen.routeName,
+      initialRoute: userProvider.firebaseUser != null
+          ? HomeScreen.routeName
+          : IntroductionScreen.routeName,
       routes: {
-        IntroductionScreen.routeName: (context) =>const IntroductionScreen(),
+        IntroductionScreen.routeName: (context) => const IntroductionScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
-        RigisterScreen.routeName: (context) => RigisterScreen(),
+        RegisterScreen.routeName: (context) => RegisterScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
-        AddEventsScreen.routeName: (context) =>  AddEventsScreen(),
+        AddEventsScreen.routeName: (context) => AddEventsScreen(),
         ForgetPassword.routeName: (context) => ForgetPassword(),
       },
     );

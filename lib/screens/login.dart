@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_c13_monday/firebase/firebase_manager.dart';
 import 'package:todo_c13_monday/screens/register.dart';
 
+import '../providers/user_provider.dart';
 import 'forget_password.dart';
 import 'home/home.dart';
 
@@ -9,10 +12,12 @@ class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-   LoginScreen({super.key});
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -26,27 +31,27 @@ class LoginScreen extends StatelessWidget {
                   width: 136,
                   height: 186,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 TextField(
                   controller: emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "email",
                     prefixIcon: Icon(Icons.email),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 TextField(
                   controller: passwordController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Password",
                     prefixIcon: Icon(Icons.lock),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Align(
@@ -64,12 +69,51 @@ class LoginScreen extends StatelessWidget {
                             ),
                       )),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+                    FirebaseManager.login(
+                      emailController.text,
+                      passwordController.text,
+                      () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                            title: Center(child: CircularProgressIndicator()),
+                            backgroundColor: Colors.transparent,
+                          ),
+                        );
+                      },
+                      () async {
+                        Navigator.pop(context);
+                        await userProvider.initUser();
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          HomeScreen.routeName,
+                          (route) => false,
+                        );
+                      },
+                      (message) {
+                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Something went Wrong"),
+                            content: Text(message),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Ok"))
+                            ],
+                          ),
+                        );
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -82,12 +126,12 @@ class LoginScreen extends StatelessWidget {
                           .titleMedium!
                           .copyWith(color: Colors.white)),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, RigisterScreen.routeName);
+                    Navigator.pushNamed(context, RegisterScreen.routeName);
                   },
                   child: Text.rich(
                     textAlign: TextAlign.center,
@@ -95,32 +139,34 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: "Don’t Have Account ?",
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                         ),
                         TextSpan(
                           text: " Create Account",
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                  ),
                         )
                       ],
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 Row(
                   children: [
-                    Expanded(child: Divider(
-                        color: Theme.of(context).primaryColor,
+                    Expanded(
+                        child: Divider(
+                      color: Theme.of(context).primaryColor,
                       indent: 10,
                       endIndent: 40,
-            
                     )),
                     Text(
                       textAlign: TextAlign.center,
@@ -129,11 +175,11 @@ class LoginScreen extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                           color: Theme.of(context).primaryColor),
                     ),
-                    Expanded(child: Divider(
-                        color: Theme.of(context).primaryColor,
+                    Expanded(
+                        child: Divider(
+                      color: Theme.of(context).primaryColor,
                       indent: 40,
                       endIndent: 10,
-            
                     )),
                   ],
                 ),

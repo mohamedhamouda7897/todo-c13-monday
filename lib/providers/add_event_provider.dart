@@ -14,10 +14,18 @@ class AddEventProvider extends ChangeNotifier {
   ];
 
   int selectedIndex = 0;
+  var selectedDate = DateTime.now();
 
   String get imageName => eventsCategories[selectedIndex];
+
   String get selectedEventName => eventsCategories[selectedIndex];
+
   int get eventsCategoriesLength => eventsCategories.length;
+
+  changeSelectedDate(DateTime date) {
+    selectedDate = date;
+    notifyListeners();
+  }
 
   changeEventCategory(int index) {
     selectedIndex = index;

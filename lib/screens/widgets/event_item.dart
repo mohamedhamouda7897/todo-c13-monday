@@ -1,7 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_c13_monday/firebase/firebase_manager.dart';
+import 'package:todo_c13_monday/models/task_model.dart';
 
 class EventItem extends StatelessWidget {
-  const EventItem({super.key});
+  TaskModel taskModel;
+
+  EventItem({required this.taskModel, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,7 @@ class EventItem extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Image.asset(
-                    "assets/images/birthday.png",
+                    "assets/images/${taskModel.category}.png",
                     height: double.infinity,
                     fit: BoxFit.fill,
                   ),
@@ -32,15 +37,31 @@ class EventItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8)),
                   child: Row(
                     children: [
-                      Text("This is a Birthday Party"),
+                      Text(taskModel.title),
                       Spacer(),
                       IconButton(
                           onPressed: () {},
                           icon: Icon(
-                            Icons.favorite,
+                            Icons.edit,
                             size: 24,
                             color: Theme.of(context).primaryColor,
-                          ))
+                          )),
+                      IconButton(
+                          onPressed: () {
+                            FirebaseManager.deleteEvent(taskModel.id);
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            size: 24,
+                            color: Theme.of(context).primaryColor,
+                          )),
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.favorite_border,
+                            size: 24,
+                            color: Theme.of(context).primaryColor,
+                          )),
                     ],
                   ),
                 ),
@@ -55,14 +76,17 @@ class EventItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "21",
+                    DateTime.fromMillisecondsSinceEpoch(taskModel.date)
+                        .toString()
+                        .substring(8, 10),
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   Text(
-                    "NOV",
+                    DateFormat.MMM().format(
+                        DateTime.fromMillisecondsSinceEpoch(taskModel.date)),
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,

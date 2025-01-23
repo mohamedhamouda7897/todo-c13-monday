@@ -1,11 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_c13_monday/firebase/firebase_manager.dart';
+import 'package:todo_c13_monday/models/task_model.dart';
+import 'package:todo_c13_monday/providers/user_provider.dart';
 import 'package:todo_c13_monday/screens/widgets/event_item.dart';
 
-class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+class HomeTab extends StatefulWidget {
+  HomeTab({super.key});
+
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  List<String> eventsCategories = [
+    "All",
+    "birthday",
+    "book_club",
+    "eating",
+    "exhibtion",
+    "gaming",
+    "holiday",
+    "sport",
+    "workshop",
+    "meeting",
+  ];
+
+  int selectedCategory = 0;
 
   @override
   Widget build(BuildContext context) {
+    var userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -29,7 +56,7 @@ class HomeTab extends StatelessWidget {
                   .copyWith(color: Colors.white),
             ),
             Text(
-              "John Safwat",
+              userProvider.userModel?.name ?? "null",
               textAlign: TextAlign.start,
               style: Theme.of(context)
                   .textTheme
@@ -53,6 +80,51 @@ class HomeTab extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(
+              height: 9,
+            ),
+            Container(
+              height: 40,
+              child: ListView.separated(
+                separatorBuilder: (context, index) => SizedBox(
+                  width: 16,
+                ),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      selectedCategory = index;
+
+                      setState(() {});
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                          color: selectedCategory != index
+                              ? Theme.of(context).primaryColor
+                              : Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                          ),
+                          borderRadius: BorderRadius.circular(18)),
+                      child: Text(
+                        eventsCategories[index],
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                                color: selectedCategory == index
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.white),
+                      ),
+                    ),
+                  );
+                },
+                itemCount: eventsCategories.length,
+              ),
+            )
           ],
         ),
         actions: [
@@ -78,24 +150,35 @@ class HomeTab extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return EventItem();
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      height: 8,
-                    );
-                  },
-                  itemCount: 100),
+      body: StreamBuilder<QuerySnapshot<TaskModel>>(
+        stream: FirebaseManager.getEvents(eventsCategories[selectedCategory]),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                      itemBuilder: (context, index) {
+                        return EventItem(
+                          taskModel: snapshot.data!.docs[index].data(),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return SizedBox(
+                          height: 8,
+                        );
+                      },
+                      itemCount: snapshot.data?.docs.length ?? 0),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
